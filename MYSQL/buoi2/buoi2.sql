@@ -77,3 +77,26 @@ CREATE TABLE Answer (
 	CONSTRAINT FK_Answer_Question_ID FOREIGN KEY (Question_ID) REFERENCES Question(Question_ID)
 );
 
+CREATE TABLE Exam (
+    Exam_ID INT AUTO_INCREMENT,
+    Code VARCHAR(20) NOT NULL UNIQUE,
+    Title VARCHAR(100),
+    Category_ID INT,
+    Duration INT NOT NULL,
+    Creator_ID INT NOT NULL,
+    Create_Date DATETIME,
+	PRIMARY KEY (Exam_ID, Category_ID),
+    
+	CONSTRAINT FK_Exam_Category_ID FOREIGN KEY (Category_ID) REFERENCES CategoryQuestion(Category_ID),
+	CONSTRAINT FK_Exam_Creator_ID FOREIGN KEY (Creator_ID) REFERENCES Account(Account_ID)
+);
+
+CREATE TABLE ExamQuestion (
+    ExamID INT NOT NULL,
+    QuestionID INT NOT NULL,
+    PRIMARY KEY (ExamID, QuestionID),
+    
+	CONSTRAINT FK_ExamQuestion_ExamID FOREIGN KEY (ExamID) REFERENCES Exam(ExamID),
+	CONSTRAINT FK_ExamQuestion_QuestionID FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
+);
+

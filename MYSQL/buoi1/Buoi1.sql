@@ -69,9 +69,9 @@ CREATE TABLE Question (
 
 CREATE TABLE Answer (
     Answer_ID INT AUTO_INCREMENT,
-    Content TEXT,
-    Question_ID INT,
-    is_Correct BOOLEAN,
+	Content TEXT NOT NULL,
+    Question_ID INT NOT NULL,
+    is_Correct BOOLEAN DEFAULT FALSE,
 	PRIMARY KEY (Answer_ID, Question_ID),
     
 	CONSTRAINT FK_Answer_Question_ID FOREIGN KEY (Question_ID) REFERENCES Question(Question_ID)

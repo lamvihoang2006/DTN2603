@@ -20,6 +20,18 @@ INSERT INTO Account(Email, Username, Full_Name, Department_ID, Position_ID, Crea
 ('email9@gmail.com', 'user9', 'Bui Quang Huy', 3, 1, '2019-12-01'),
 ('email10@gmail.com', 'user10', 'Bui Luong Thanh', 2, 2, '2019-12-25');
 
+INSERT INTO Account(Email, Username, Full_Name, Department_ID, Position_ID, Create_Date) VALUES
+('email11@gmail.com', 'user11', 'Lam Vi Hoang', 1, 1, '2020-01-01'),
+('email12@gmail.com', 'user12', 'Dinh Thu Thao', 2, 2, '2019-12-01'),
+('email13@gmail.com', 'user13', 'Nguyen Xuan Do', 3, 3, '2019-11-20'),
+('email14@gmail.com', 'user14', 'Tran Thi Thuy Trang', 3, 4, '2021-03-03'), 
+('email15@gmail.com', 'user15', 'Lam Kien Luong', 4, 1, '2020-02-15'),
+('email16@gmail.com', 'user16', 'Tran Giai Dao', 5, 2, '2019-05-05'),
+('email17@gmail.com', 'user17', 'Tran Quynh Nhi', 2, 3, '2019-12-01'),
+('email18@gmail.com', 'user18', 'Nguyen Xuan Bach', 1, 4, '2018-12-12'),
+('email19@gmail.com', 'user19', 'Bui Quang Huy', 3, 1, '2019-12-01'),
+('email20@gmail.com', 'user20', 'Bui Luong Thanh', 2, 2, '2019-12-25');
+
 INSERT INTO `Group`(Group_Name, Creator_ID, Create_Date) VALUES
 ('Group 1', 1, '2019-01-01'), ('Group 2', 2, '2019-10-15'),
 ('Group 3', 3, '2020-01-01'), ('Group 4', 4, '2021-05-05'),
@@ -70,6 +82,7 @@ INSERT INTO Exam(Code, Title, Category_ID, Duration, Creator_ID, Create_Date) VA
 INSERT INTO ExamQuestion(Exam_ID, Question_ID) VALUES
 (1, 1), (1, 2), (2, 3), (3, 4), (4, 5),
 (5, 6), (6, 7), (7, 8), (8, 9), (9, 10);
+
 
 -- Question 2: lấy ra tất cả các phòng ban
 SELECT * FROM Department;
@@ -123,3 +136,15 @@ LIMIT 5;
 SELECT * 
 FROM Account 
 WHERE Full_Name LIKE 'D%o';
+
+-- Question 12: Xóa tất cả các exam được tạo trước ngày 20/12/2019
+DELETE FROM question WHERE create_date < '2019-12-20'; 
+
+-- Question 13: Xóa tất cả các question có nội dung bắt đầu bằng từ "câu hỏi"
+DELETE FROM question WHERE Content LIKE 'câu hỏi%';
+
+-- Question 14: Update thông tin của account có id = 5 thành tên "Nguyễn Bá Lộc" và email thành loc.nguyenba@vti.com.vn
+UPDATE account SET Full_Name = 'Nguyễn Bá Lộc', email = 'loc.nguyenba@vti.com.vn' WHERE Account_ID = 5;
+
+-- Question 15: update account có id = 5 sẽ thuộc group có id = 4
+UPDATE group_account SET Group_ID = 4 WHERE Account_ID = 5;
