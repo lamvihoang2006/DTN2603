@@ -132,3 +132,56 @@ SELECT q.*
 FROM question q
 LEFT JOIN answer ans ON q.question_id = ans.question_id
 WHERE ans.answer_id IS NULL;
+
+-- 2. Union.
+--        Question 17:
+-- a) Lấy các account thuộc nhóm thứ 1
+SELECT acc.*
+FROM account acc
+JOIN groupaccount ga ON acc.account_id = ga.account_id
+WHERE ga.group_id = 1;
+
+-- b) Lấy các account thuộc nhóm thứ 2
+SELECT acc.*
+FROM account acc
+JOIN groupaccount ga ON acc.account_id = ga.account_id
+WHERE ga.group_id = 2;
+
+-- c) Ghép 2 kết quả từ câu a) và câu b) sao cho không có record nào trùng nhau
+SELECT acc.*
+FROM account acc
+JOIN groupaccount ga ON acc.account_id = ga.account_id
+WHERE ga.group_id = 1
+UNION
+SELECT acc.*
+FROM account acc
+JOIN groupaccount ga ON acc.account_id = ga.account_id
+WHERE ga.group_id = 2;
+
+-- Question 18:
+-- a) Lấy các group có lớn hơn 5 thành viên
+SELECT g.group_id, g.group_name, COUNT(ga.account_id) AS so_thanh_vien
+FROM `group` g
+JOIN groupaccount ga ON g.group_id = ga.group_id
+GROUP BY g.group_id, g.group_name
+HAVING COUNT(ga.account_id) > 5;
+
+-- b) Lấy các group có nhỏ hơn 7 thành viên
+SELECT g.group_id, g.group_name, COUNT(ga.account_id) AS so_thanh_vien
+FROM `group` g
+JOIN groupaccount ga ON g.group_id = ga.group_id
+GROUP BY g.group_id, g.group_name
+HAVING COUNT(ga.account_id) < 7;
+
+-- c) Ghép 2 kết quả từ câu a) và câu b).
+SELECT g.group_id, g.group_name, COUNT(ga.account_id) AS so_thanh_vien
+FROM `group` g
+JOIN groupaccount ga ON g.group_id = ga.group_id
+GROUP BY g.group_id, g.group_name
+HAVING COUNT(ga.account_id) > 5
+UNION ALL
+SELECT g.group_id, g.group_name, COUNT(ga.account_id) AS so_thanh_vien
+FROM `group` g
+JOIN groupaccount ga ON g.group_id = ga.group_id
+GROUP BY g.group_id, g.group_name
+HAVING COUNT(ga.account_id) < 7;
