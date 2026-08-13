@@ -122,6 +122,38 @@ END $$
 DELIMITER ;
 
 -- Question 10: Tìm ra các exam được tạo từ 3 năm trước và xóa các exam đó đi (sử dụng store ở câu 9 để xóa) Sau đó in số lượng record đã remove từ các table liên quan trong khi removing
+DELIMITER $$
+CREATE PROCEDURE sp_delete_exams_3_years_ago_while()
+BEGIN
+    DECLARE v_exam_id INT;
+    DECLARE v_count_exam INT DEFAULT 0;
+    DECLARE v_count_examquestion INT DEFAULT 0;
+    DECLARE v_temp_count INT DEFAULT 0;
+
+    WHILE (SELECT COUNT(*) FROM Exam WHERE Create_Date <= DATE_SUB(NOW(), INTERVAL 3 YEAR)) > 0 DO
+        
+        SELECT Exam_ID INTO v_exam_id 
+        FROM Exam 
+        WHERE Create_Date <= DATE_SUB(NOW(), INTERVAL 3 YEAR) 
+        LIMIT 1;
+
+        SELECT COUNT(*) INTO v_temp_count 
+        FROM ExamQuestion 
+        WHERE Exam_ID = v_exam_id;
+
+        SET v_count_examquestion = v_count_examquestion + v_temp_count;
+        SET v_count_exam = v_count_exam + 1;
+
+        CALL sp_delete_exam_by_id(v_exam_id);
+        
+    END WHILE;
+
+    SELECT 
+        v_count_exam AS 'Số lượng Exam đã xóa',
+        v_count_examquestion AS 'Số lượng ExamQuestion đã xóa';
+        
+END $$
+DELIMITER ;
 
 -- Question 11: Viết store cho phép người dùng xóa phòng ban bằng cách người dùng nhập vào tên phòng ban và các account thuộc phòng ban đó sẽ được chuyển về phòng ban default là phòng ban chờ việc
 DELIMITER $$
@@ -141,5 +173,45 @@ END $$
 DELIMITER ;
 
 -- Question 12: Viết store để in ra mỗi tháng có bao nhiêu câu hỏi được tạo trong năm nay
+DELIMITER $$
+CREATE PROCEDURE sp_count_questions_per_month()
+BEGIN
+	SELECT 
+        MONTH(Create_Date) AS `Tháng`,
+        COUNT(Question_ID) AS `Số lượng câu hỏi`
+    FROM Question
+    WHERE YEAR(Create_Date) = YEAR(CURRENT_TIMESTAMP)
+    GROUP BY MONTH(Create_Date)
+    ORDER BY MONTH(Create_Date) ASC;
+END $$
+DELIMITER ;
 
 -- Question 13: Viết store để in ra mỗi tháng có bao nhiêu câu hỏi được tạo trong 6 tháng gần đây nhất (Nếu tháng nào không có thì sẽ in ra là "không có câu hỏi nào trong tháng")
+DELIMITER $$
+CREATE PROCEDURE sp_count_questions_last_6_months()
+BEGIN
+    SELECT 
+        CONCAT('Tháng ', t.Month_Value, '-', t.Year_Value) AS `Thời gian`,
+		CASE 
+            WHEN COUNT(q.Question_ID) = 0 THEN 'không có câu hỏi nào trong tháng'
+            ELSE CAST(COUNT(q.Question_ID) AS CHAR)
+        END AS `Số lượng câu hỏi`
+        
+    FROM (
+        SELECT MONTH(CURRENT_TIMESTAMP) AS Month_Value, YEAR(CURRENT_TIMESTAMP) AS Year_Value
+        UNION SELECT MONTH(CURRENT_TIMESTAMP - INTERVAL 1 MONTH), YEAR(CURRENT_TIMESTAMP - INTERVAL 1 MONTH)
+        UNION SELECT MONTH(CURRENT_TIMESTAMP - INTERVAL 2 MONTH), YEAR(CURRENT_TIMESTAMP - INTERVAL 2 MONTH)
+        UNION SELECT MONTH(CURRENT_TIMESTAMP - INTERVAL 3 MONTH), YEAR(CURRENT_TIMESTAMP - INTERVAL 3 MONTH)
+        UNION SELECT MONTH(CURRENT_TIMESTAMP - INTERVAL 4 MONTH), YEAR(CURRENT_TIMESTAMP - INTERVAL 4 MONTH)
+        UNION SELECT MONTH(CURRENT_TIMESTAMP - INTERVAL 5 MONTH), YEAR(CURRENT_TIMESTAMP - INTERVAL 5 MONTH)
+    ) AS t
+    
+    LEFT JOIN Question q 
+        ON t.Month_Value = MONTH(q.Create_Date) 
+        AND t.Year_Value = YEAR(q.Create_Date)
+        
+    GROUP BY t.Year_Value, t.Month_Value
+    ORDER BY t.Year_Value ASC, t.Month_Value ASC;
+    
+END $$
+DELIMITER ;

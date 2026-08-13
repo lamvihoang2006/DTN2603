@@ -92,11 +92,11 @@ CREATE TABLE Exam (
 );
 
 CREATE TABLE ExamQuestion (
-    ExamID INT NOT NULL,
-    QuestionID INT NOT NULL,
-    PRIMARY KEY (ExamID, QuestionID),
+    Exam_ID INT NOT NULL,
+    Question_ID INT NOT NULL,
+    PRIMARY KEY (Exam_ID, Question_ID),
     
-	CONSTRAINT FK_ExamQuestion_ExamID FOREIGN KEY (ExamID) REFERENCES Exam(ExamID),
-	CONSTRAINT FK_ExamQuestion_QuestionID FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
+	CONSTRAINT FK_ExamQuestion_Exam_ID FOREIGN KEY (Exam_ID) REFERENCES Exam(Exam_ID),
+	CONSTRAINT FK_ExamQuestion_Question_ID FOREIGN KEY (Question_ID) REFERENCES Question(Question_ID)
 );
 
