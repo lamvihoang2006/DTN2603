@@ -163,7 +163,7 @@ BEGIN
     DECLARE v_waiting_dept_id INT;
     
 	SELECT department_id INTO v_target_dept_id FROM department WHERE department_name = in_dept_name;
-	SELECT department_id INTO v_waiting_dept_id FROM department WHERE department_name = 'Phòng chờ' LIMIT 1;
+	SELECT department_id INTO v_waiting_dept_id FROM department WHERE department_name = 'Phòng chờ việc' LIMIT 1;
     
 	UPDATE account SET department_id = v_waiting_dept_id WHERE department_id = v_target_dept_id;
 	DELETE FROM department WHERE department_id = v_target_dept_id;
