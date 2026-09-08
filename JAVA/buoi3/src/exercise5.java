@@ -1,2 +1,3 @@
-public class exercise5 {
+public class exercise5
+{
 }
