@@ -88,6 +88,7 @@ public class QuanLySach implements IQuanLySach {
 
     @Override
     public void hienThiThongTin() {
+
         if (danhSachTaiLieu.isEmpty()) {
             System.out.println("Danh sách tài liệu trống.");
             return;
