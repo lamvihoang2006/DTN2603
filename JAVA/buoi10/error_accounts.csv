@@ -1,0 +1,3 @@
+Email,Username,FullName,DepartmentID,PositionID,Error_Message
+sai_email,dungnv123,Tran Van B,2,2,Username đã tồn tại (Unique)!
+tuan@gmail.com,tuan123,Le Anh Tuan,999,1,Department ID không tồn tại trong hệ thống!
