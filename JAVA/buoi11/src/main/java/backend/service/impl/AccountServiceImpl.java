@@ -76,62 +76,21 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public String importCsv(String filePath) throws Exception {
-        if (!filePath.toLowerCase().endsWith(".csv")) {
-            throw new Exception("File không hợp lệ! Vui lòng cung cấp file có đuôi .csv");
-        }
+        return utils.CsvHelper.importCsvGeneric(filePath, 5, data -> {
+            String email = data[0].trim();
+            String username = data[1].trim();
+            String fullName = data[2].trim();
+            String depIdStr = data[3].trim();
+            String posIdStr = data[4].trim();
 
-        java.io.File inputFile = new java.io.File(filePath);
-        if (!inputFile.exists()) {
-            throw new Exception("File không tồn tại! Vui lòng kiểm tra lại đường dẫn.");
-        }
-
-        String errorFilePath = inputFile.getParent() + "/error_" + inputFile.getName();
-        int successCount = 0;
-        int errorCount = 0;
-
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(inputFile));
-             java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(errorFilePath))) {
-
-            String line;
-            boolean isFirstLine = true;
-
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    bw.write(line + ",Error_Message\n");
-                    isFirstLine = false;
-                    continue;
-                }
-
-                if (line.trim().isEmpty()) continue;
-
-                String[] data = line.split(",");
-                if (data.length < 5) {
-                    bw.write(line + ",Thiếu cột dữ liệu\n");
-                    errorCount++;
-                    continue;
-                }
-
-                try {
-                    String email = data[0].trim();
-                    String username = data[1].trim();
-                    String fullName = data[2].trim();
-                    int depId = Integer.parseInt(data[3].trim());
-                    int posId = Integer.parseInt(data[4].trim());
-
-                    this.addAccount(email, username, fullName, depId, posId);
-                    successCount++;
-                } catch (Exception e) {
-                    bw.write(line + "," + e.getMessage() + "\n");
-                    errorCount++;
-                }
+            if (!depIdStr.matches("\\d+") || !posIdStr.matches("\\d+")) {
+                throw new Exception("Lỗi: Department ID và Position ID bắt buộc phải là số!");
             }
-        }
 
-        if (errorCount == 0) {
-            new java.io.File(errorFilePath).delete();
-            return "Import thành công " + successCount + " bản ghi. Không có lỗi.";
-        } else {
-            return "Import thành công " + successCount + " bản ghi. Có " + errorCount + " bản ghi lỗi.\n-> Đã xuất file lỗi tại: " + errorFilePath;
-        }
+            int depId = Integer.parseInt(depIdStr);
+            int posId = Integer.parseInt(posIdStr);
+
+            this.addAccount(email, username, fullName, depId, posId);
+        });
     }
 }
